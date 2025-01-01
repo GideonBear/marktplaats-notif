@@ -49,5 +49,5 @@ if not config_file.exists():
     print("Default configuration created")
 
 
-with config_file.open("b") as file:
+with config_file.open("rb") as file:
     config = schema.validate(tomllib.load(file))
