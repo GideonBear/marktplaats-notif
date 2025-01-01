@@ -1,0 +1,7 @@
+services:
+  marktplaats-notif:
+    image: ghcr.io/gideonbear/marktplaats-notif
+    container_name: marktplaats-notif
+    volumes:
+      - ./config:/config
+    restart: unless-stopped
