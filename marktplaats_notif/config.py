@@ -41,7 +41,7 @@ schema = Schema({
         }
     },
     "global": search_schema,
-    "searches": [search_schema],
+    "search": [search_schema],
 })
 
 if not config_file.exists():
