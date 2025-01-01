@@ -51,3 +51,10 @@ if not config_file.exists():
 
 with config_file.open("rb") as file:
     config = schema.validate(tomllib.load(file))
+    # Populate searches with global parameters
+    config["search"] = list(map(
+        # The search has priority over global; global will only fill omitted parameters
+        lambda search: config["global"] | search,
+        config["search"],
+    ))
+    del config["global"]
