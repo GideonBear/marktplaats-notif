@@ -1,0 +1,29 @@
+[general]
+# The interval to do requests at in seconds. All requests are bundled.
+interval = 600
+
+
+[notifications.ntfy]
+# The ntfy endpoint
+endpoint = "https://ntfy.sh/test"
+
+
+[global]
+# Contains defaults parameters for searches. These can be overridden for each search.
+
+# Zip code to base distance from
+#zip_code = "1234AB"
+
+
+[[search]]
+# Search query
+query = "Fiets"
+
+# Max distance from the zip code for listings in meters
+#distance = 10000
+
+# Lowest price to search for in euros
+#price_from = 10
+
+# Highest price to search for in euros
+#price_to = 100
