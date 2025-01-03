@@ -19,6 +19,9 @@ endpoint = "https://ntfy.sh/test"
 # Search query
 query = "Fiets"
 
+# Filter in specific category (L1) or subcategory (L2)
+#category = "Fietsen | Heren | Herenfietsen"
+
 # Max distance from the zip code for listings in meters
 #distance = 10000
 

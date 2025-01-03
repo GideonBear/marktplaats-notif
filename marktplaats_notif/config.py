@@ -3,8 +3,8 @@ from pathlib import Path
 from shutil import copy
 from string import digits, ascii_uppercase
 
-from schema import Schema, And, Optional
-
+from schema import Schema, And, Optional, Use
+from marktplaats import category_from_name
 
 config_dir = Path("/config")
 config_file = config_dir / "config.toml"
@@ -29,6 +29,7 @@ search_schema = {
     Optional("price_to"): positive_int,
     Optional("zip_code"): And(str, is_zip_code),
     Optional("distance"): positive_int,
+    Optional("category"): And(str, len, Use(category_from_name))
 }
 
 schema = Schema({
@@ -51,6 +52,7 @@ if not config_file.exists():
 
 with config_file.open("rb") as file:
     config = schema.validate(tomllib.load(file))
+
     # Populate searches with global parameters
     config["search"] = list(map(
         # The search has priority over global; global will only fill omitted parameters
@@ -58,3 +60,8 @@ with config_file.open("rb") as file:
         config["search"],
     ))
     del config["global"]
+
+    # Check for required parameters *after* populating with global parameters
+    for search in config["search"]:
+        if "query" not in search:
+            raise ValueError("Search must have a query")
