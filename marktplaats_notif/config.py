@@ -30,7 +30,7 @@ search_schema = {
     Optional("price_to"): positive_int,
     Optional("zip_code"): And(str, is_zip_code),
     Optional("distance"): positive_int,
-    Optional("category"): And(str, len, Use(category_from_name))
+    Optional("category"): And(str, len, Use(category_from_name))  # type: ignore  # type checker error
 }
 
 schema = Schema({
