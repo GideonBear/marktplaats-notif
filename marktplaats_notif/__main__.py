@@ -23,7 +23,7 @@ def prepare_header(s: str) -> bytes:
 def notify(listing: Listing) -> None:
     resp = requests.post(
         config["notifications"]["ntfy"]["endpoint"],
-        data=f"{listing.price_as_string_nl()} 📍 {listing.location.city}"\n{listing.description}",
+        data=f"{listing.price_as_string_nl()} 📍 {listing.location.city}\n{listing.description}",
         headers={
             "Title": prepare_header(f"{listing.title}"),
             "Click": prepare_header(listing.link),
@@ -42,6 +42,7 @@ def main() -> int:
     while True:
         print(f"Doing round from {last_send_time}, total of {datetime.now() - last_send_time}...")
 
+        # TODO: deduplicate listings
         for search in config["search"]:
             print(f"Search: {search["query"]}")
             for listing in query_from_search(search, last_send_time):
