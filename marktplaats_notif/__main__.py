@@ -32,6 +32,12 @@ def notify(listing: Listing) -> None:
 
 def main() -> int:
     print("Started")
+
+    resp = requests.post(
+        config["notifications"]["ntfy"]["endpoint"],
+        data="Hello",
+    )
+
     last_send_time = datetime.now()
     while True:
         print(f"Doing round from {last_send_time}, total of {datetime.now() - last_send_time}...")
