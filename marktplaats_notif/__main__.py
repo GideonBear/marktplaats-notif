@@ -1,3 +1,5 @@
+print("Import time")
+
 import sys
 import time
 from datetime import datetime
