@@ -1,5 +1,3 @@
-print("Import time")
-
 import sys
 import time
 from datetime import datetime
@@ -34,9 +32,9 @@ def notify(listing: Listing) -> None:
 
 def main() -> int:
     print("Started")
+    last_send_time = datetime.now()
     while True:
-        print("Doing round...")
-        last_send_time = datetime.now()
+        print(f"Doing round from {last_send_time}, total of {datetime.now() - last_send_time}...")
 
         for search in config["search"]:
             print(f"Search: {search["query"]}")
@@ -45,6 +43,7 @@ def main() -> int:
                 notify(listing)
             print("Done")
         print("Done round")
+        last_send_time = datetime.now()
 
         time.sleep(config["general"]["interval"])
 
