@@ -4,7 +4,7 @@ from shutil import copy
 from string import digits, ascii_uppercase
 
 from schema import Schema, And, Optional, Use
-from marktplaats import category_from_name
+# from marktplaats import category_from_name
 
 
 config_dir = Path("/config")
@@ -30,7 +30,7 @@ search_schema = {
     Optional("price_to"): positive_int,
     Optional("zip_code"): And(str, is_zip_code),
     Optional("distance"): positive_int,
-    Optional("category"): And(str, len, Use(category_from_name))
+    # Optional("category"): And(str, len, Use(category_from_name))
 }
 
 schema = Schema({
