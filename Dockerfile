@@ -7,4 +7,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD [ "python3", "-m", "marktplaats_notif" ]
+CMD [ "python", "-m", "marktplaats_notif" ]

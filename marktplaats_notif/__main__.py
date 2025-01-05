@@ -38,6 +38,8 @@ def main() -> int:
         data="Hello",
     )
 
+    return 0
+
     last_send_time = datetime.now()
     while True:
         print(f"Doing round from {last_send_time}, total of {datetime.now() - last_send_time}...")
