@@ -23,9 +23,9 @@ def prepare_header(s: str) -> bytes:
 def notify(listing: Listing) -> None:
     resp = requests.post(
         config["notifications"]["ntfy"]["endpoint"],
-        data=listing.description,
+        data=f"{listing.price_as_string_nl()} 📍 {listing.location.city}"\n{listing.description}",
         headers={
-            "Title": prepare_header(f"{listing.title} ({listing.price_as_string_nl()}) 📍 {listing.location.city}"),
+            "Title": prepare_header(f"{listing.title}"),
             "Click": prepare_header(listing.link),
             "Attach": prepare_header(listing.images[0].extra_large),
             "Icon": prepare_header(ICON),
