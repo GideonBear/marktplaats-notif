@@ -1,4 +1,4 @@
-marktplaats>=0.1.5
-#marktplaats @ git+https://github.com/GideonBear/marktplaats-py.git@categories_and_price_type
+#marktplaats>=0.1.5
+marktplaats @ git+https://github.com/GideonBear/marktplaats-py.git@categories_and_price_type
 schema>=0.7.7
 requests>=2.32.3
