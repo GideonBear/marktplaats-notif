@@ -47,6 +47,5 @@ def main() -> int:
         time.sleep(config["general"]["interval"])
 
 
-
 if __name__ == '__main__':
     sys.exit(main())

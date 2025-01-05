@@ -6,6 +6,7 @@ from string import digits, ascii_uppercase
 from schema import Schema, And, Optional, Use
 from marktplaats import category_from_name
 
+
 config_dir = Path("/config")
 config_file = config_dir / "config.toml"
 
@@ -56,6 +57,7 @@ with config_file.open("rb") as file:
     # Populate searches with global parameters
     config["search"] = list(map(
         # The search has priority over global; global will only fill omitted parameters
+        # TODO: test that this works
         lambda search: config["global"] | search,
         config["search"],
     ))
