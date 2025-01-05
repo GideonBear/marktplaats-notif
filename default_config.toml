@@ -16,7 +16,7 @@ endpoint = "https://ntfy.sh/test"
 
 
 [[search]]
-# Search query
+# Search query. Optional.
 query = "Fiets"
 
 # Filter in specific category (L1) or subcategory (L2)
