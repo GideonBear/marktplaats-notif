@@ -63,7 +63,6 @@ with config_file.open("rb") as file:
     ))
     del config["global"]
 
-    # Check for required parameters *after* populating with global parameters
     for search in config["search"]:
         if "query" not in search:
-            raise ValueError("Search must have a query")
+            search["query"] = ""
