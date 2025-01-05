@@ -9,6 +9,9 @@ from marktplaats import SearchQuery, Listing
 from marktplaats_notif.config import config
 
 
+ICON = "https://user-images.githubusercontent.com/20847106/64513789-988b7500-d2e9-11e9-91e9-fef666b1e3c0.png"
+
+
 def query_from_search(search: dict[str, Any], offered_since: datetime) -> list[Listing]:
     return SearchQuery(**search, limit=30, offered_since=offered_since).get_listings()
 
@@ -20,10 +23,12 @@ def prepare_header(s: str) -> bytes:
 def notify(listing: Listing) -> None:
     resp = requests.post(
         config["notifications"]["ntfy"]["endpoint"],
-        data=listing.description,
+        data=f"Location: {listing.location.city}\n{listing.description}",
         headers={
-            "Title": prepare_header(f"marktplaats-notif: {listing.title} (€ {listing.price_as_string_nl()})"),
+            "Title": prepare_header(f"{listing.title} ({listing.price_as_string_nl()})"),
             "Click": prepare_header(listing.link),
+            "Attach": prepare_header(listing.images[0].extra_large),
+            "Icon": prepare_header(ICON),
         },
     )
     if not resp.status_code == 200:
