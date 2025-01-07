@@ -10,8 +10,6 @@ from marktplaats import category_from_name
 config_dir = Path("/config")
 config_file = config_dir / "config.toml"
 
-positive_int = And(int, lambda n: n > 0)
-
 def is_zip_code(s: str) -> bool:
     # This is intentionally strict as 1234AB is the only tested format.
     #  Spaces, lowercase, etc. all might work, but are untested.
@@ -26,10 +24,10 @@ def is_http(s: str) -> bool:
 
 search_schema = {
     Optional("query"): And(str, len),
-    Optional("price_from"): positive_int,
-    Optional("price_to"): positive_int,
+    Optional("price_from"): int,
+    Optional("price_to"): int,
     Optional("zip_code"): And(str, is_zip_code),
-    Optional("distance"): positive_int,
+    Optional("distance"): int,
     Optional("category"): And(str, len, Use(category_from_name))  # type: ignore  # type checker error
 }
 
