@@ -10,6 +10,8 @@ from marktplaats import category_from_name
 config_dir = Path("/config")
 config_file = config_dir / "config.toml"
 
+positive_int = And(int, lambda n: n > 0)
+
 def is_zip_code(s: str) -> bool:
     # This is intentionally strict as 1234AB is the only tested format.
     #  Spaces, lowercase, etc. all might work, but are untested.
