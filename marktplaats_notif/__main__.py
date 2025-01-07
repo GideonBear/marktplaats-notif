@@ -24,7 +24,10 @@ def notify(listing: Listing | str) -> None:
     if isinstance(listing, str):
         resp = requests.post(
             config["notifications"]["ntfy"]["endpoint"],
-            data=listing,
+            data="You will receive notifications via this channel.",
+            headers={
+                "Title": listing,
+            }
         )
     else:
         resp = requests.post(
