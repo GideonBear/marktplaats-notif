@@ -20,23 +20,30 @@ def prepare_header(s: str) -> bytes:
     return s.encode()
 
 
-def notify(listing: Listing) -> None:
-    resp = requests.post(
-        config["notifications"]["ntfy"]["endpoint"],
-        data=f"{listing.price_as_string_nl()} 📍 {listing.location.city} ({listing.location.distance / 1000} km)\n{listing.description}",
-        headers={
-            "Title": prepare_header(f"{listing.title}"),
-            "Click": prepare_header(listing.link),
-            "Attach": prepare_header(listing.images[0].extra_large),
-            "Icon": prepare_header(ICON),
-        },
-    )
+def notify(listing: Listing | str) -> None:
+    if isinstance(listing, str):
+        resp = requests.post(
+            config["notifications"]["ntfy"]["endpoint"],
+            data=listing,
+        )
+    else:
+        resp = requests.post(
+            config["notifications"]["ntfy"]["endpoint"],
+            data=f"{listing.price_as_string(lang="nl")} 📍 {listing.location.city} ({listing.location.distance / 1000} km)\n{listing.description}",
+            headers={
+                "Title": prepare_header(f"{listing.title}"),
+                "Click": prepare_header(listing.link),
+                "Attach": prepare_header(listing.images[0].extra_large),
+                "Icon": prepare_header(ICON),
+            },
+        )
     if not resp.status_code == 200:
         raise Exception("Failed to send notification", resp)
 
 
 def main() -> int:
     print("Started")
+    notify("marktplaats-notif started.")
 
     last_send_time = datetime.now()
     while True:
