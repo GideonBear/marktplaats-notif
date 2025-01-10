@@ -1,4 +1,3 @@
-#marktplaats>=0.1.6
-marktplaats @ git+https://github.com/jensjeflensje/marktplaats-py.git@pre-release
+marktplaats>=0.2.0
 schema>=0.7.7
 requests>=2.32.3
