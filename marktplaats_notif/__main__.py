@@ -1,5 +1,6 @@
 import sys
 import time
+from collections import defaultdict
 from datetime import datetime
 from typing import Any
 
@@ -20,7 +21,7 @@ def prepare_header(s: str) -> bytes:
     return s.encode()
 
 
-def notify(listing: Listing | str) -> None:
+def notify(listing: Listing | str, search_is: list[int] | None = None) -> None:
     if isinstance(listing, str):
         resp = requests.post(
             config["notifications"]["ntfy"]["endpoint"],
@@ -32,7 +33,7 @@ def notify(listing: Listing | str) -> None:
     else:
         resp = requests.post(
             config["notifications"]["ntfy"]["endpoint"],
-            data=f"{listing.price_as_string(lang="nl")} 📍 {listing.location.city} ({listing.location.distance / 1000} km)\n{listing.description}",
+            data=f"{listing.price_as_string(lang="nl")} 📍 {listing.location.city} ({listing.location.distance / 1000} km)\n{listing.description}\nFrom search: {", ".join(map(str, search_is))}",
             headers={
                 "Title": prepare_header(f"{listing.title}"),
                 "Click": prepare_header(listing.link),
@@ -53,12 +54,18 @@ def main() -> int:
         print(f"Doing round from {last_send_time}, total of {datetime.now() - last_send_time}...")
 
         # TODO: deduplicate listings
-        for search in config["search"]:
+        listings = defaultdict(list)
+        for search_i, search in enumerate(config["search"]):
             print(f"Search: {search["query"]}")
             for listing in query_from_search(search, last_send_time):
-                print(f"Notifying for listing: {listing.title}")
-                notify(listing)
+                listings[listing].append(search_i)
             print("Done")
+
+        print("Notifying...")
+        for listing, search_is in listings.items():
+            print(f"Notifying for listing: {listing.title}: {search_is}")
+            notify(listing, search_is)
+
         print("Done round")
         last_send_time = datetime.now()
 
