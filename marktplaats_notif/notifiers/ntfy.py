@@ -1,4 +1,5 @@
 import traceback
+from typing import Any
 
 import requests
 from marktplaats import Listing
@@ -12,7 +13,7 @@ def prepare_header(s: str) -> bytes:
 
 
 class Ntfy(Notifier):
-    def __init__(self, config):
+    def __init__(self, config: dict[str, Any]):
         config = config["notifications"]["ntfy"]
         self.endpoint = config["endpoint"]
 
@@ -54,11 +55,29 @@ class Ntfy(Notifier):
             data=f"{price} 📍 {city} ({distance} km)\n{description}\nFrom searches: {from_searches}",
         )
 
-    def notify_error(self, error: Exception, context: str) -> None:
+    def notify_exception(self, context: str) -> None:
         self.post(
             headers={
                 "Title": f"marktplaats-notif has had an error {context}.",
+                "Tags": "x",
+            },
+            data=f"{traceback.format_exc()}",
+        )
+
+    def notify_error(self, message: str) -> None:
+        self.post(
+            headers={
+                "Title": f"marktplaats-notif has had an error.",
+                "Tags": "x"
+            },
+            data=message,
+        )
+
+    def notify_warning(self, message: str) -> None:
+        self.post(
+            headers={
+                "Title": "marktplaats-notif has a warning.",
                 "Tags": "warning"
             },
-            data=f"{traceback.format_exc()}"
+            data=message,
         )

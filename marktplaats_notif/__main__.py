@@ -7,16 +7,28 @@ from marktplaats import SearchQuery, Listing
 
 from marktplaats_notif import notifiers
 from marktplaats_notif.config import config
+from marktplaats_notif.notifier import Notifier
 
 
-def query_from_search(search: dict[str, Any], offered_since: datetime) -> list[Listing]:
-    return SearchQuery(**search, limit=30, offered_since=offered_since).get_listings()
+LIMIT = 30
+
+
+def query_from_search(search: dict[str, Any], offered_since: datetime, notifier: Notifier) -> list[Listing]:
+    listings = SearchQuery(**search, limit=LIMIT, offered_since=offered_since).get_listings()
+
+    if len(listings) >= 30:
+        # TODO: implement pagination and remove this warning
+        notifier.notify_warning(f"The search limit of {LIMIT} was reached during this search. You are missing searches.")
+    if len(listings) > 30:
+        notifier.notify_error(f"The search limit of {LIMIT} was exceeded somehow. This should not happen at all.")
+
+    return listings
 
 
 def main() -> NoReturn:
     print("Started")
     # TODO: Support other notification channels?
-    notifier = notifiers.Ntfy(config)
+    notifier: Notifier = notifiers.Ntfy(config)
     notifier.notify_started()
 
     last_send_time = datetime.now()
@@ -28,9 +40,9 @@ def main() -> NoReturn:
         for search_i, search in enumerate(config["search"]):
             print(f"Search: {search["query"]}")
             try:
-                current_listings = query_from_search(search, last_send_time)
-            except Exception as e:
-                notifier.notify_error(e, "during search")
+                current_listings = query_from_search(search, last_send_time, notifier)
+            except Exception:
+                notifier.notify_exception("during search")
                 continue
             for listing in current_listings:
                 listings[listing].append(search_i)
