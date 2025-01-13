@@ -31,15 +31,18 @@ def notify(listing: Listing | str, search_is: list[int] | None = None) -> None:
             }
         )
     else:
+        headers = {
+            "Title": prepare_header(f"{listing.title}"),
+            "Click": prepare_header(listing.link),
+            "Icon": prepare_header(ICON),
+        }
+        if listing.images:
+            headers["Attach"] = prepare_header(listing.images[0].extra_large)
+
         resp = requests.post(
             config["notifications"]["ntfy"]["endpoint"],
             data=f"{listing.price_as_string(lang="nl")} 📍 {listing.location.city} ({listing.location.distance / 1000} km)\n{listing.description}\nFrom search: {", ".join(map(str, search_is))}",
-            headers={
-                "Title": prepare_header(f"{listing.title}"),
-                "Click": prepare_header(listing.link),
-                "Attach": prepare_header(listing.images[0].extra_large),
-                "Icon": prepare_header(ICON),
-            },
+            headers=headers
         )
     if not resp.status_code == 200:
         raise Exception("Failed to send notification", resp)
