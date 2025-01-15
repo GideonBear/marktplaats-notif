@@ -6,7 +6,7 @@ from typing import Any, NoReturn
 from marktplaats import SearchQuery, Listing
 
 from marktplaats_notif import notifiers
-from marktplaats_notif.config import config
+from marktplaats_notif.config import config, load_config
 from marktplaats_notif.notifier import Notifier
 
 
@@ -33,6 +33,10 @@ def main() -> NoReturn:
 
     last_send_time = datetime.now()
     while True:
+        # Load configuration again to make sure it's up to date
+        #  from potential changes by the web-interface
+        load_config()
+
         print(f"Doing round from {last_send_time}, total of {datetime.now() - last_send_time}...")
 
         # TODO: deduplicate listings

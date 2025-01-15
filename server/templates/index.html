@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>marktplaats-notif web-interface</title>
+    <style>
+        .search {
+            box-shadow: 0 0 2pt black;
+        }
+    </style>
+</head>
+<body>
+<form>
+    {% for search in searches %}
+    <div class="search">
+        <label>
+            Search query
+            <input type="text" name="searches[{{ }}]" value="query">
+        </label><br>
+    </div>
+    {% endfor %}
+</form>
+</body>
+</html>
