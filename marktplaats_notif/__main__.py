@@ -1,6 +1,6 @@
 import time
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any, NoReturn
 
 from marktplaats import SearchQuery, Listing
@@ -31,7 +31,10 @@ def main() -> NoReturn:
     notifier: Notifier = notifiers.Ntfy(config)
     notifier.notify_started()
 
-    last_send_time = datetime.now()
+    # Check for new listings from before it was started.
+    #  This results in duplicates but reduces the chance to miss something.
+    last_send_time = datetime.now() - timedelta(seconds=config["general"]["interval"])
+
     while True:
         print(f"Doing round from {last_send_time}, total of {datetime.now() - last_send_time}...")
 
