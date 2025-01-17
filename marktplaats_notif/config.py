@@ -68,9 +68,12 @@ def load_config():
         del config["global"]
 
         for search in config["search"]:
+            # Allow query to be optional. Empty query has expected result
             if "query" not in search:
                 search["query"] = ""
+            # Convert distance from km to meters
+            if "distance" in search:
+                search["distance"] = search["distance"] * 1000
 
 
 config: dict[str, Any] = None  # type: ignore
-load_config()

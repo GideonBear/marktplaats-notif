@@ -1,4 +1,6 @@
-marktplaats>=0.2.0
+#marktplaats>=0.2.0
+marktplaats @ git+https://github.com/GideonBear/marktplaats-py@category_lists
 schema>=0.7.7
 requests>=2.32.3
 flask>=3.1.0
+gunicorn>=23.0.0

@@ -35,7 +35,11 @@ def main() -> NoReturn:
     while True:
         # Load configuration again to make sure it's up to date
         #  from potential changes by the web-interface
-        load_config()
+        try:
+            load_config()
+        except Exception:
+            notifier.notify_exception("during config load")
+            continue
 
         print(f"Doing round from {last_send_time}, total of {datetime.now() - last_send_time}...")
 
