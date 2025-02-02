@@ -14,7 +14,12 @@ LIMIT = 30
 
 
 def query_from_search(search: dict[str, Any], offered_since: datetime, notifier: Notifier) -> list[Listing]:
-    listings = SearchQuery(**search, limit=LIMIT, offered_since=offered_since).get_listings()
+    search["distance"] *= 1000  # marktplaats-py expects meters
+    listings = SearchQuery(
+        **search,
+        limit=LIMIT,
+        offered_since=offered_since,
+    ).get_listings()
 
     if len(listings) >= 30:
         # TODO: implement pagination and remove this warning

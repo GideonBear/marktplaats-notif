@@ -1,6 +1,9 @@
 #marktplaats>=0.2.0
-marktplaats @ git+https://github.com/GideonBear/marktplaats-py@category_lists
+marktplaats @ git+https://github.com/jensjeflensje/marktplaats-py@pre-release
 schema>=0.7.7
+# Ntfy
 requests>=2.32.3
+# Server
 flask>=3.1.0
 gunicorn>=23.0.0
+tomli_w>=1.2.0

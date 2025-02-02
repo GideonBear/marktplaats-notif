@@ -31,7 +31,7 @@ search_schema = {
     Optional("price_to"): int,
     Optional("zip_code"): And(str, is_zip_code),
     Optional("distance"): int,
-    Optional("category"): And(str, len, Use(category_from_name))  # type: ignore  # type checker error
+    Optional("category"): And(str, len, Use(category_from_name)),  # type: ignore  # type checker error
 }
 
 schema = Schema({
@@ -71,9 +71,6 @@ def load_config():
             # Allow query to be optional. Empty query has expected result
             if "query" not in search:
                 search["query"] = ""
-            # Convert distance from km to meters
-            if "distance" in search:
-                search["distance"] = search["distance"] * 1000
 
 
 config: dict[str, Any] = None  # type: ignore
