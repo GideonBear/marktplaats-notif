@@ -4,4 +4,8 @@ services:
     container_name: marktplaats-notif
     volumes:
       - ./config:/config
+    environment:
+      - PORT=1234
+    ports:
+      - 1234:1234
     restart: unless-stopped

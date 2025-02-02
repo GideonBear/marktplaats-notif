@@ -9,4 +9,4 @@ COPY . .
 
 ENV PYTHONUNBUFFERED=1
 
-CMD [ "python", "-m", "marktplaats_notif" ]
+CMD "./wrapper.sh"
