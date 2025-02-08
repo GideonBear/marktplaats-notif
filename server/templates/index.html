@@ -76,6 +76,7 @@
     {% set outer_loop = loop %}
     <div class="search">
         <h3>{% if loop.index == 1 %} Global {% else %} {{ loop.index - 2 }} {% endif %}</h3>
+        {% if loop.index == 1 %} Contains defaults parameters for searches. These can be overridden for each search. {% endif %}
         <label>
             Search query:
             <br>
