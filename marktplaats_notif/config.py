@@ -2,6 +2,7 @@ import tomllib
 from pathlib import Path
 from shutil import copy
 from string import digits, ascii_uppercase
+from typing import Any
 
 from schema import Schema, And, Optional, Use
 from marktplaats import category_from_name
@@ -30,7 +31,7 @@ search_schema = {
     Optional("price_to"): int,
     Optional("zip_code"): And(str, is_zip_code),
     Optional("distance"): int,
-    Optional("category"): And(str, len, Use(category_from_name))  # type: ignore  # type checker error
+    Optional("category"): And(str, len, Use(category_from_name)),  # type: ignore  # type checker error
 }
 
 schema = Schema({
@@ -46,23 +47,30 @@ schema = Schema({
     "search": [search_schema],
 })
 
-if not config_file.exists():
-    copy("default_config.toml", config_file)
-    print("Default configuration created")
+
+def load_config():
+    global config
+
+    if not config_file.exists():
+        copy("default_config.toml", config_file)
+        print("Default configuration created")
+
+    with config_file.open("rb") as file:
+        config = schema.validate(tomllib.load(file))
+
+        # Populate searches with global parameters
+        config["search"] = list(map(
+            # The search has priority over global; global will only fill omitted parameters
+            # TODO: test that this works
+            lambda search: config["global"] | search,
+            config["search"],
+        ))
+        del config["global"]
+
+        for search in config["search"]:
+            # Allow query to be optional. Empty query has expected result
+            if "query" not in search:
+                search["query"] = ""
 
 
-with config_file.open("rb") as file:
-    config = schema.validate(tomllib.load(file))
-
-    # Populate searches with global parameters
-    config["search"] = list(map(
-        # The search has priority over global; global will only fill omitted parameters
-        # TODO: test that this works
-        lambda search: config["global"] | search,
-        config["search"],
-    ))
-    del config["global"]
-
-    for search in config["search"]:
-        if "query" not in search:
-            search["query"] = ""
+config: dict[str, Any] = None  # type: ignore

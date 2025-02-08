@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>marktplaats-notif web-interface</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        .search {
+/*            box-shadow: 0 0 2pt black;*/
+            border: 2px solid black;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px;
+        }
+
+        .general {
+            border: 2px solid green;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px;
+        }
+
+        .notifications {
+            border: 2px solid green;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px;
+        }
+
+        .search {
+          position: relative;
+/*          display: inline-block;*/
+        }
+        .delete {
+          position: absolute;
+          top: 0;
+          right: 0;
+          cursor: pointer;
+        }
+    </style>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+<!--        <ul class=flashes>-->
+        {% for message in messages %}
+<!--          <dialog style="display: block; background-color: green">{{ message }}</dialog>-->
+            <script>alert("{{ message }}")</script>
+        {% endfor %}
+<!--        </ul>-->
+      {% endif %}
+    {% endwith %}
+</head>
+<body>
+<form action="/api/update" method="post" id="update_form">
+    <div class="general">
+        <label>
+            Interval
+            <br>
+            <div class="input-group">
+                <input type="number" class="form-control" name="general.interval" value="{{ config['general']['interval'] }}">
+                <span class="input-group-text"> s </span>
+            </div>
+        </label>
+    </div>
+
+    <div class="notifications">
+        <label>
+            Ntfy endpoint
+            <br>
+            <div class="input-group">
+                <input type="url" class="form-control" name="notifications.ntfy.endpoint" value="{{ config['notifications']['ntfy']['endpoint'] }}" pattern="https://.*">
+            </div>
+        </label><br><br>
+    </div>
+
+    {% for search in searches %}
+    {% set outer_loop = loop %}
+    <div class="search">
+        <h3>{% if loop.index == 1 %} Global {% else %} {{ loop.index - 2 }} {% endif %}</h3>
+        <label>
+            Search query:
+            <br>
+            <input type="text" class="form-control" name="query[]" value="{{ search['query'] }}">
+        </label><br><br>
+        <label>
+            Price from:
+            <br>
+            <div class="input-group">
+                <span class="input-group-text"> € </span>
+                <input type="number" class="form-control" name="price_from[]" value="{{ search['price_from'] }}">
+            </div>
+        </label><br><br>
+        <label>
+            Price to:
+            <br>
+            <div class="input-group">
+                <span class="input-group-text"> € </span>
+                <input type="number" class="form-control" name="price_to[]" value="{{ search['price_to'] }}">
+            </div>
+        </label><br><br>
+        <label>
+            Zip code:
+            <br>
+            <input type="text" class="form-control" placeholder="1234AB" name="zip_code[]" value="{{ search['zip_code'] }}" pattern="[0-9]{4}[A-Z]{2}">
+        </label><br><br>
+        <label>
+            Distance:
+            <br>
+            <div class="input-group">
+               <input type="number" class="form-control" name="distance[]" value="{{ search['distance'] }}">
+               <span class="input-group-text"> km </span>
+            </div>
+        </label><br><br>
+        <label>
+            L1 category:
+            <br>
+            <select name="l1_category[]" class="s1">
+                <option value="">None</option>
+                {% for category in l1_categories %}
+                <option name="{{ category.name }}" {% if category == selected_l1_categories[outer_loop.index - 1] %} selected {% endif %}>
+                    {{ category.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </label><br><br>
+        <label>
+            L2 category:
+            <br>
+            <select name="l2_category[]" class="s2">
+                <option value="">None</option>
+                {% for parent, categories in l2_categories_by_parent.items() %}
+                {% for category in categories %}
+                <option value="{{ category.name }}" {% if category == selected_l2_categories[outer_loop.index - 1] %} selected {% endif %} data-parent="{{ parent }}">
+                    {{ category.name }}
+                </option>
+                {% endfor %}
+                {% endfor %}
+            </select>
+        </label><br><br>
+
+        {% if loop.index != 1 %}
+        <img onclick="window.delete_search({{ loop.index - 2 }})" class="delete" src="{{ url_for('static', filename='trash-outline.svg') }}" alt="delete" height="20" width="20">
+        <input type="submit" name="delete_search" style="display: none" value="{{ loop.index - 2 }}" id="delete_search_submit_{{ loop.index - 2}}">
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    <input type="submit" name="add_search" style="margin: 15px" value="Add search"><br>
+
+    <input type="submit" name="update" style="margin: 15px" value="Update"><br>
+</form>
+<script>
+    function delete_search(search_i) {
+        const submit = document.getElementById("delete_search_submit_" + search_i.toString())
+        submit.click()
+    }
+
+    function on_change(el) {
+        const selected = el.value;
+        const s2 = el.parentElement.parentElement.getElementsByClassName("s2")[0]
+        for (s2_el of Array.from(s2.children).slice(1)) {
+            if (s2_el.getAttribute("data-parent") === selected) {
+                s2_el.removeAttribute("hidden")
+                s2_el.removeAttribute("disabled")
+            } else {
+                s2_el.setAttribute("hidden", "hidden")
+                s2_el.setAttribute("disabled", "disabled")
+            }
+        }
+        if (s2.options[s2.selectedIndex].getAttribute("hidden")) {
+            s2.value = ""
+        }
+    }
+
+    for (el of document.getElementsByClassName("s1")) {
+        el.addEventListener("change", (event) => {
+            on_change(event.target)
+        })
+        on_change(el)
+    }
+</script>
+</body>
+</html>

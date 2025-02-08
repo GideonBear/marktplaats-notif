@@ -6,7 +6,7 @@ from typing import Any, NoReturn
 from marktplaats import SearchQuery, Listing
 
 from marktplaats_notif import notifiers
-from marktplaats_notif.config import config
+from marktplaats_notif.config import config, load_config
 from marktplaats_notif.notifier import Notifier
 
 
@@ -14,7 +14,12 @@ LIMIT = 30
 
 
 def query_from_search(search: dict[str, Any], offered_since: datetime, notifier: Notifier) -> list[Listing]:
-    listings = SearchQuery(**search, limit=LIMIT, offered_since=offered_since).get_listings()
+    search["distance"] *= 1000  # marktplaats-py expects meters
+    listings = SearchQuery(
+        **search,
+        limit=LIMIT,
+        offered_since=offered_since,
+    ).get_listings()
 
     if len(listings) >= 30:
         # TODO: implement pagination and remove this warning
@@ -36,6 +41,14 @@ def main() -> NoReturn:
     last_send_time = datetime.now() - timedelta(seconds=config["general"]["interval"])
 
     while True:
+        # Load configuration again to make sure it's up to date
+        #  from potential changes by the web-interface
+        try:
+            load_config()
+        except Exception:
+            notifier.notify_exception("during config load")
+            continue
+
         print(f"Doing round from {last_send_time}, total of {datetime.now() - last_send_time}...")
 
         # TODO: deduplicate listings
