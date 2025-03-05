@@ -14,7 +14,8 @@ LIMIT = 30
 
 
 def query_from_search(search: dict[str, Any], offered_since: datetime, notifier: Notifier) -> list[Listing]:
-    search["distance"] *= 1000  # marktplaats-py expects meters
+    if "distance" in search:
+        search["distance"] *= 1000  # marktplaats-py expects meters
     listings = SearchQuery(
         **search,
         limit=LIMIT,
