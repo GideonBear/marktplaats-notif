@@ -32,6 +32,7 @@ def query_from_search(search: dict[str, Any], offered_since: datetime, notifier:
 
 def main() -> NoReturn:
     print("Started")
+    load_config()
     # TODO: Support other notification channels?
     notifier: Notifier = notifiers.Ntfy(config)
     notifier.notify_started()
