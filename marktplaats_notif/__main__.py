@@ -6,7 +6,7 @@ from typing import Any, NoReturn
 from marktplaats import SearchQuery, Listing
 
 from marktplaats_notif import notifiers
-from marktplaats_notif.config import config, load_config
+from marktplaats_notif.config import get_config, load_config
 from marktplaats_notif.notifier import Notifier
 
 
@@ -34,12 +34,12 @@ def main() -> NoReturn:
     print("Started")
     load_config()
     # TODO: Support other notification channels?
-    notifier: Notifier = notifiers.Ntfy(config)
+    notifier: Notifier = notifiers.Ntfy(get_config())
     notifier.notify_started()
 
     # Check for new listings from before it was started.
     #  This results in duplicates but reduces the chance to miss something.
-    last_send_time = datetime.now() - timedelta(seconds=config["general"]["interval"])
+    last_send_time = datetime.now() - timedelta(seconds=get_config()["general"]["interval"])
 
     while True:
         # Load configuration again to make sure it's up to date
@@ -54,7 +54,7 @@ def main() -> NoReturn:
 
         # TODO: deduplicate listings
         listings = defaultdict(list)
-        for search_i, search in enumerate(config["search"]):
+        for search_i, search in enumerate(get_config()["search"]):
             print(f"Search: {search["query"]}")
             try:
                 current_listings = query_from_search(search, last_send_time, notifier)
@@ -73,7 +73,7 @@ def main() -> NoReturn:
         print("Done round")
         last_send_time = datetime.now()
 
-        time.sleep(config["general"]["interval"])
+        time.sleep(get_config()["general"]["interval"])
 
 
 if __name__ == '__main__':
