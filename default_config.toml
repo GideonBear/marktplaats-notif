@@ -2,6 +2,10 @@
 # The interval to do requests at in seconds. All requests are bundled.
 interval = 600
 
+# Some marktplaats accounts continuesly post the same listings multiple times per day. Here these can be filtered out.
+#  This matches the title exactly
+title_blacklist = []
+
 
 [notifications.ntfy]
 # The ntfy endpoint

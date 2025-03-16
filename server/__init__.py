@@ -131,9 +131,12 @@ def update_update():
 
             del search["l1_category"]
 
+    old_config = get_config()
+
     config = {
         "general": {
             "interval": int(request.form["general.interval"]),
+            "title_blacklist": old_config["general"]["title_blacklist"]
         },
         "notifications": {
             "ntfy": {

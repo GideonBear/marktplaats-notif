@@ -45,6 +45,7 @@ schema = Schema({
     },
     "global": search_schema,
     "search": [search_schema],
+    "title_blacklist": [str],
 })
 
 

@@ -13,6 +13,10 @@ from marktplaats_notif.notifier import Notifier
 LIMIT = 30
 
 
+def filter_listing(l: Listing) -> bool:
+    return l.title not in config["title_blacklist"]
+
+
 def query_from_search(search: dict[str, Any], offered_since: datetime, notifier: Notifier) -> list[Listing]:
     search["distance"] *= 1000  # marktplaats-py expects meters
     listings = SearchQuery(
@@ -20,6 +24,8 @@ def query_from_search(search: dict[str, Any], offered_since: datetime, notifier:
         limit=LIMIT,
         offered_since=offered_since,
     ).get_listings()
+
+    listings = list(filter(filter_listing, listings))
 
     if len(listings) >= 30:
         # TODO: implement pagination and remove this warning
