@@ -74,4 +74,8 @@ def load_config():
                 search["query"] = ""
 
 
+def get_config():
+    return config
+
+
 config: dict[str, Any] = None  # type: ignore

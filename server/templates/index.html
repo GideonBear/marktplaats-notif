@@ -67,7 +67,7 @@
             Ntfy endpoint
             <br>
             <div class="input-group">
-                <input type="url" class="form-control" name="notifications.ntfy.endpoint" value="{{ config['notifications']['ntfy']['endpoint'] }}" pattern="https://.*">
+                <input type="url" class="form-control" name="notifications.ntfy.endpoint" value="{{ config['notifications']['ntfy']['endpoint'] }}">
             </div>
         </label><br><br>
     </div>
@@ -76,7 +76,7 @@
     {% set outer_loop = loop %}
     <div class="search">
         <h3>{% if loop.index == 1 %} Global {% else %} {{ loop.index - 2 }} {% endif %}</h3>
-        {% if loop.index == 1 %} Contains defaults parameters for searches. These can be overridden for each search. {% endif %}
+        {% if loop.index == 1 %} Contains defaults parameters for searches. These can be overridden for each search. <br><br> {% endif %}
         <label>
             Search query:
             <br>
