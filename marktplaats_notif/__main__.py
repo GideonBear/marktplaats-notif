@@ -25,7 +25,7 @@ def query_from_search(search: dict[str, Any], offered_since: datetime, notifier:
         # TODO: implement pagination and remove this warning
         notifier.notify_warning(f"The search limit of {LIMIT} was reached during this search. You are missing searches.")
     if len(listings) > 30:
-        notifier.notify_error(f"The search limit of {LIMIT} was exceeded somehow. This should not happen at all.")
+        notifier.notify_error(f"The search limit of {LIMIT} was exceeded by the API somehow. This should not happen at all.")
 
     return listings
 
