@@ -37,6 +37,7 @@ search_schema = {
 schema = Schema({
     "general": {
         "interval": positive_int,
+        "title_blacklist": [str],
     },
     "notifications": {
         "ntfy": {
@@ -45,7 +46,6 @@ schema = Schema({
     },
     "global": search_schema,
     "search": [search_schema],
-    "title_blacklist": [str],
 })
 
 
