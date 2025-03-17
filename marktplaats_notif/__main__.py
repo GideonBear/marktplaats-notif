@@ -14,7 +14,7 @@ LIMIT = 30
 
 
 def filter_listing(l: Listing) -> bool:
-    return l.title not in config["title_blacklist"]
+    return l.title not in get_config()["title_blacklist"]
 
 
 def query_from_search(search: dict[str, Any], offered_since: datetime, notifier: Notifier) -> list[Listing]:
