@@ -66,7 +66,7 @@ def main() -> NoReturn:
             try:
                 current_listings = query_from_search(search, last_send_time, notifier)
             except Exception:
-                notifier.notify_exception("during search")
+                notifier.notify_exception(f"during search {search_i}")
                 continue
             for listing in current_listings:
                 listings[listing].append(search_i)
