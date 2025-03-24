@@ -3,7 +3,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 from typing import Any, NoReturn
 
-from marktplaats import SearchQuery, Listing
+from marktplaats import SearchQuery, Listing, BadStatusCodeError
 
 from marktplaats_notif import notifiers
 from marktplaats_notif.config import get_config, load_config
@@ -20,11 +20,22 @@ def filter_listing(l: Listing) -> bool:
 def query_from_search(search: dict[str, Any], offered_since: datetime, notifier: Notifier) -> list[Listing]:
     if "distance" in search:
         search["distance"] *= 1000  # marktplaats-py expects meters
-    listings = SearchQuery(
-        **search,
-        limit=LIMIT,
-        offered_since=offered_since,
-    ).get_listings()
+
+    try:
+        query = SearchQuery(
+            **search,
+            limit=LIMIT,
+            offered_since=offered_since,
+        )
+    except BadStatusCodeError as err:
+        notifier.notify_warning(f"Got a bad status code: {err}. Retrying. If there is no further error the retry was successful; on failure the error is propagated.")
+        query = SearchQuery(
+            **search,
+            limit=LIMIT,
+            offered_since=offered_since,
+        )
+
+    listings = query.get_listings()
 
     listings = list(filter(filter_listing, listings))
 
