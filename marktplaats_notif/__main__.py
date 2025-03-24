@@ -55,6 +55,7 @@ def main() -> NoReturn:
             load_config()
         except Exception:
             notifier.notify_exception("during config load")
+            sleep(30)  # Sleep for a bit to avoid spam
             continue
 
         print(f"Doing round from {last_send_time}, total of {datetime.now() - last_send_time}...")
