@@ -25,14 +25,14 @@ def is_zip_code(s: str) -> bool:
 def is_http(s: str) -> bool:
     return s.startswith("http://") or s.startswith("https://")
 
-search_schema = {
+search_schema = And({
     Optional("query"): And(str, len),
     Optional("price_from"): int,
     Optional("price_to"): int,
     Optional("zip_code"): And(str, is_zip_code),
     Optional("distance"): int,
     Optional("category"): And(str, len, Use(category_from_name)),  # type: ignore  # type checker error
-}
+}, lambda x: "query" in x or "category" in x)
 
 schema = Schema({
     "general": {
