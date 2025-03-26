@@ -45,7 +45,8 @@ schema = Schema({
         }
     },
     "global": search_schema,
-    "search": [And(search_schema, lambda x: "query" in x or "category" in x)],
+    # Require one of query or category to be present. This is enforced by marktplaats.SearchQuery as well, but this will catch it earlier.
+    "search": [And(search_schema, lambda x: "query" in x or "category" in x)],  # type: ignore  # type checker error
 })
 
 
