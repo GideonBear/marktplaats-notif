@@ -68,11 +68,6 @@ def load_config():
         ))
         del config["global"]
 
-        for search in config["search"]:
-            # Allow query to be optional. Empty query has expected result
-            if "query" not in search:
-                search["query"] = ""
-
 
 def get_config():
     return config
