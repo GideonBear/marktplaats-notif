@@ -1,5 +1,5 @@
 #marktplaats>=0.2.5
-marktplaats @ git+https://github.com/GideonBear/marktplaats-py.git@request_errors
+marktplaats @ git+https://github.com/jensjeflensje/marktplaats-py.git@4b6e774
 schema>=0.7.7
 # Ntfy
 requests>=2.32.3
