@@ -66,7 +66,7 @@ def main() -> NoReturn:
             load_config()
         except Exception:
             notifier.notify_exception("during config load")
-            sleep(30)  # Sleep for a bit to avoid spam
+            time.sleep(30)  # Sleep for a bit to avoid spam
             continue
 
         print(f"Doing round from {last_send_time}, total of {datetime.now() - last_send_time}...")
@@ -74,7 +74,7 @@ def main() -> NoReturn:
         # TODO: deduplicate listings
         listings = defaultdict(list)
         for search_i, search in enumerate(get_config()["search"]):
-            print(f"Search: {search["query"]}")
+            print(f"Search {search_i}")
             try:
                 current_listings = query_from_search(search, last_send_time, notifier)
             except Exception:
